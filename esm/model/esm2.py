@@ -74,7 +74,7 @@ class ESM2(nn.Module):
             weight=self.embed_tokens.weight,
         )
 
-    def forward(self, tokens, repr_layers=[], need_head_weights=False, return_contacts=False):
+    def forward(self, tokens, repr_layers=[], need_head_weights=False, return_contacts=False, colossal = False):
         if return_contacts:
             need_head_weights = True
 
@@ -83,7 +83,7 @@ class ESM2(nn.Module):
 
         x = self.embed_scale * self.embed_tokens(tokens)
         
-        if type(x) == 'colossalai.tensor.colo_tensor.ColoTensor':
+        if colossal == True:
             pass
         else:
             if self.token_dropout:
