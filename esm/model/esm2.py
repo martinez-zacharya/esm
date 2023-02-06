@@ -82,7 +82,7 @@ class ESM2(nn.Module):
         padding_mask = tokens.eq(self.padding_idx)  # B, T
 
         x = self.embed_scale * self.embed_tokens(tokens)
-        
+        print(x)
         if colossal == True:
             pass
         else:
@@ -96,6 +96,7 @@ class ESM2(nn.Module):
 
             if padding_mask is not None:
                 x = x * (1 - padding_mask.unsqueeze(-1).type_as(x))
+        print(x)
         repr_layers = set(repr_layers)
         hidden_representations = {}
         if 0 in repr_layers:
@@ -106,10 +107,10 @@ class ESM2(nn.Module):
 
         # (B, T, E) => (T, B, E)
         x = x.transpose(0, 1)
-
+        print(x)
         if not padding_mask.any():
             padding_mask = None
-
+        print(x)
         for layer_idx, layer in enumerate(self.layers):
             x, attn = layer(
                 x,
