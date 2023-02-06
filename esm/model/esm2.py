@@ -82,18 +82,20 @@ class ESM2(nn.Module):
         padding_mask = tokens.eq(self.padding_idx)  # B, T
 
         x = self.embed_scale * self.embed_tokens(tokens)
-        print(type(x), x)
-        if self.token_dropout:
-            x.masked_fill_((tokens == self.mask_idx).unsqueeze(-1), 0.0)
-            # x: B x T x C
-            mask_ratio_train = 0.15 * 0.8
-            src_lengths = (~padding_mask).sum(-1)
-            mask_ratio_observed = (tokens == self.mask_idx).sum(-1).to(x.dtype) / src_lengths
-            x = x * (1 - mask_ratio_train) / (1 - mask_ratio_observed)[:, None, None]
+        
+        if type(x) == 'colossalai.tensor.colo_tensor.ColoTensor':
+            pass
+        else:
+            if self.token_dropout:
+                x.masked_fill_((tokens == self.mask_idx).unsqueeze(-1), 0.0)
+                # x: B x T x C
+                mask_ratio_train = 0.15 * 0.8
+                src_lengths = (~padding_mask).sum(-1)
+                mask_ratio_observed = (tokens == self.mask_idx).sum(-1).to(x.dtype) / src_lengths
+                x = x * (1 - mask_ratio_train) / (1 - mask_ratio_observed)[:, None, None]
 
-        if padding_mask is not None:
-            x = x * (1 - padding_mask.unsqueeze(-1).type_as(x))
-        print(x)
+            if padding_mask is not None:
+                x = x * (1 - padding_mask.unsqueeze(-1).type_as(x))
         repr_layers = set(repr_layers)
         hidden_representations = {}
         if 0 in repr_layers:
