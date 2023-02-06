@@ -81,6 +81,7 @@ class ESM2(nn.Module):
         assert tokens.ndim == 2
         padding_mask = tokens.eq(self.padding_idx)  # B, T
         print(padding_mask)
+        print(type(padding_mask))
         x = self.embed_scale * self.embed_tokens(tokens)
 
         if self.token_dropout:
@@ -92,6 +93,7 @@ class ESM2(nn.Module):
             x = x * (1 - mask_ratio_train) / (1 - mask_ratio_observed)[:, None, None]
 
         if padding_mask is not None:
+            print('made it')
             x = x * (1 - padding_mask.unsqueeze(-1).type_as(x))
 
         repr_layers = set(repr_layers)
