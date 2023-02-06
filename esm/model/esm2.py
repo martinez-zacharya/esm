@@ -80,7 +80,7 @@ class ESM2(nn.Module):
 
         assert tokens.ndim == 2
         padding_mask = tokens.eq(self.padding_idx)  # B, T
-
+        print(padding_mask)
         x = self.embed_scale * self.embed_tokens(tokens)
 
         if self.token_dropout:
