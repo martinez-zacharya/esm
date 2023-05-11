@@ -187,36 +187,36 @@ def load_model_and_alphabet_core(model_name, model_data, regression_data=None):
     if regression_data is not None:
         model_data["model"].update(regression_data["model"])
 
-    if model_name.startswith("esm2"):
-        model, alphabet, model_state = _load_model_and_alphabet_core_v2(model_data)
-    else:
-        model, alphabet, model_state = _load_model_and_alphabet_core_v1(model_data)
+#     if model_name.startswith("esm2"):
+#         model, alphabet, model_state = _load_model_and_alphabet_core_v2(model_data)
+#     else:
+#         model, alphabet, model_state = _load_model_and_alphabet_core_v1(model_data)
 
-    expected_keys = set(model.state_dict().keys())
-    found_keys = set(model_state.keys())
+#     expected_keys = set(model.state_dict().keys())
+#     found_keys = set(model_state.keys())
 
-    if regression_data is None:
-        expected_missing = {"contact_head.regression.weight", "contact_head.regression.bias"}
-        error_msgs = []
-        missing = (expected_keys - found_keys) - expected_missing
-        if missing:
-            error_msgs.append(f"Missing key(s) in state_dict: {missing}.")
-        unexpected = found_keys - expected_keys
-        if unexpected:
-            error_msgs.append(f"Unexpected key(s) in state_dict: {unexpected}.")
+#     if regression_data is None:
+#         expected_missing = {"contact_head.regression.weight", "contact_head.regression.bias"}
+#         error_msgs = []
+#         missing = (expected_keys - found_keys) - expected_missing
+#         if missing:
+#             error_msgs.append(f"Missing key(s) in state_dict: {missing}.")
+#         unexpected = found_keys - expected_keys
+#         if unexpected:
+#             error_msgs.append(f"Unexpected key(s) in state_dict: {unexpected}.")
 
-        if error_msgs:
-            raise RuntimeError(
-                "Error(s) in loading state_dict for {}:\n\t{}".format(
-                    model.__class__.__name__, "\n\t".join(error_msgs)
-                )
-            )
-        if expected_missing - found_keys:
-            warnings.warn(
-                "Regression weights not found, predicting contacts will not produce correct results."
-            )
+#         if error_msgs:
+#             raise RuntimeError(
+#                 "Error(s) in loading state_dict for {}:\n\t{}".format(
+#                     model.__class__.__name__, "\n\t".join(error_msgs)
+#                 )
+#             )
+#         if expected_missing - found_keys:
+#             warnings.warn(
+#                 "Regression weights not found, predicting contacts will not produce correct results."
+#             )
 
-    model.load_state_dict(model_state, strict=regression_data is not None)
+#     model.load_state_dict(model_state, strict=regression_data is not None)
 
     return model, alphabet
 
