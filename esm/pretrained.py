@@ -184,8 +184,8 @@ def _load_model_and_alphabet_core_v2(model_data):
 
 
 def load_model_and_alphabet_core(model_name, model_data, regression_data=None):
-    if regression_data is not None:
-        model_data["model"].update(regression_data["model"])
+#     if regression_data is not None:
+#         model_data["model"].update(regression_data["model"])
 
 #     if model_name.startswith("esm2"):
 #         model, alphabet, model_state = _load_model_and_alphabet_core_v2(model_data)
