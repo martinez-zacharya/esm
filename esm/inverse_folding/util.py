@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
@@ -112,7 +112,7 @@ def get_sequence_loss(model, alphabet, coords, seq):
     coords, confidence, strs, tokens, padding_mask = batch_converter(
         batch, device=device)
 
-    prev_output_tokens = tokens[:, :-1]
+    prev_output_tokens = tokens[:, :-1].to(device)
     target = tokens[:, 1:]
     target_padding_mask = (target == alphabet.padding_idx)
     logits, _ = model.forward(coords, padding_mask, confidence, prev_output_tokens)
@@ -132,10 +132,11 @@ def score_sequence(model, alphabet, coords, seq):
 
 
 def get_encoder_output(model, alphabet, coords):
+    device = next(model.parameters()).device
     batch_converter = CoordBatchConverter(alphabet)
-    # the batch_converter is essential for forming the correct input format
-    batch = [(coords, None, None)]
-    coords, confidence, _, _, padding_mask = batch_converter(batch)
+    batch = [(coords, None, seq)]
+    coords, confidence, strs, tokens, padding_mask = batch_converter(
+        batch, device=device)
     encoder_out = model.encoder.forward(coords, padding_mask, confidence,
             return_all_hiddens=False)
     # remove beginning and end (bos and eos tokens)
