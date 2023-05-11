@@ -6,9 +6,9 @@
 from typing import Union
 import torch
 import torch.nn as nn
-
+from esm.esm.data import Alphabet
 import esm
-from esm.modules import ContactPredictionHead, ESM1bLayerNorm, RobertaLMHead, TransformerLayer
+from esm.esm.modules import ContactPredictionHead, ESM1bLayerNorm, RobertaLMHead, TransformerLayer
 
 
 class ESM2(nn.Module):
@@ -17,15 +17,15 @@ class ESM2(nn.Module):
         num_layers: int = 33,
         embed_dim: int = 1280,
         attention_heads: int = 20,
-        alphabet: Union[esm.data.Alphabet, str] = "ESM-1b",
+        alphabet: Union[Alphabet, str] = "ESM-1b",
         token_dropout: bool = True,
     ):
         super().__init__()
         self.num_layers = num_layers
         self.embed_dim = embed_dim
         self.attention_heads = attention_heads
-        if not isinstance(alphabet, esm.data.Alphabet):
-            alphabet = esm.data.Alphabet.from_architecture(alphabet)
+        if not isinstance(alphabet, Alphabet):
+            alphabet = Alphabet.from_architecture(alphabet)
         self.alphabet = alphabet
         self.alphabet_size = len(alphabet)
         self.padding_idx = alphabet.padding_idx
@@ -82,7 +82,7 @@ class ESM2(nn.Module):
         padding_mask = tokens.eq(self.padding_idx)  # B, T
 
         x = self.embed_scale * self.embed_tokens(tokens)
-        print(x)
+        # print(x)
         if colossal == True:
             pass
         else:
@@ -96,7 +96,7 @@ class ESM2(nn.Module):
 
             if padding_mask is not None:
                 x = x * (1 - padding_mask.unsqueeze(-1).type_as(x))
-        print(x)
+        # print(x)
         repr_layers = set(repr_layers)
         hidden_representations = {}
         if 0 in repr_layers:
@@ -107,10 +107,10 @@ class ESM2(nn.Module):
 
         # (B, T, E) => (T, B, E)
         x = x.transpose(0, 1)
-        print(x)
+        # print(x)
         if not padding_mask.any():
             padding_mask = None
-        print(x)
+        # print(x)
         for layer_idx, layer in enumerate(self.layers):
             x, attn = layer(
                 x,

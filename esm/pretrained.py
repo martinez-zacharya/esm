@@ -12,7 +12,7 @@ from pathlib import Path
 import torch
 
 import esm
-from esm.model.esm2 import ESM2
+from esm.esm.model.esm2 import ESM2
 
 
 def _has_regression_weights(model_name):
@@ -162,6 +162,7 @@ def _load_model_and_alphabet_core_v1(model_data):
 
 
 def _load_model_and_alphabet_core_v2(model_data):
+    from esm.esm.data import Alphabet 
     def upgrade_state_dict(state_dict):
         """Removes prefixes 'model.encoder.sentence_encoder.' and 'model.encoder.'."""
         prefixes = ["encoder.sentence_encoder.", "encoder."]
@@ -172,7 +173,7 @@ def _load_model_and_alphabet_core_v2(model_data):
     cfg = model_data["cfg"]["model"]
     state_dict = model_data["model"]
     state_dict = upgrade_state_dict(state_dict)
-    alphabet = esm.data.Alphabet.from_architecture("ESM-1b")
+    alphabet = Alphabet.from_architecture("ESM-1b")
     model = ESM2(
         num_layers=cfg.encoder_layers,
         embed_dim=cfg.encoder_embed_dim,
@@ -186,11 +187,10 @@ def _load_model_and_alphabet_core_v2(model_data):
 def load_model_and_alphabet_core(model_name, model_data, regression_data=None):
 #     if regression_data is not None:
 #         model_data["model"].update(regression_data["model"])
-
-#     if model_name.startswith("esm2"):
-#         model, alphabet, model_state = _load_model_and_alphabet_core_v2(model_data)
-#     else:
-#         model, alphabet, model_state = _load_model_and_alphabet_core_v1(model_data)
+    if model_name.startswith("esm2"):
+        model, alphabet, model_state = _load_model_and_alphabet_core_v2(model_data)
+    else:
+        model, alphabet, model_state = _load_model_and_alphabet_core_v1(model_data)
 
 #     expected_keys = set(model.state_dict().keys())
 #     found_keys = set(model_state.keys())
