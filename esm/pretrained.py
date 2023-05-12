@@ -218,7 +218,7 @@ def load_model_and_alphabet_core(model_name, model_data, regression_data=None):
 
 #     model.load_state_dict(model_state, strict=regression_data is not None)
 
-    return model, alphabet
+    return model, alphabet, model_state
 
 
 def esm1_t34_670M_UR50S():
