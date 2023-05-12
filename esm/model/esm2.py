@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 from esm.esm.data import Alphabet
 import esm
-from esm.esm.modules import ContactPredictionHead, ESM1bLayerNorm, RobertaLMHead, TransformerLayer
+from esm.modules import ContactPredictionHead, ESM1bLayerNorm, RobertaLMHead, TransformerLayer
 
 
 class ESM2(nn.Module):
