@@ -6,7 +6,7 @@
 from typing import Union
 import torch
 import torch.nn as nn
-from esm.esm.data import Alphabet
+from esm.data import Alphabet
 import esm
 from esm.modules import ContactPredictionHead, ESM1bLayerNorm, RobertaLMHead, TransformerLayer
 
