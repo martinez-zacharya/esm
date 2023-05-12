@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from esm.esm.modules import (
+from esm.modules import (
     TransformerLayer,
     LearnedPositionalEmbedding,
     SinusoidalPositionalEmbedding,
